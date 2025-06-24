@@ -5,7 +5,7 @@ const Routes = () => {
 
   return (
     <div>
-      <h3>Boilerplate Electron-React App with Local JSON Storage</h3>
+      <h3>archive software</h3>
       <Home />
     </div>
   )
