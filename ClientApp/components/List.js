@@ -3,7 +3,7 @@ import Table from "react-bootstrap/Table"
 import Button from "react-bootstrap/Button";
 import {removeDataFromStorage} from "../renderer.js"
 
-const List = ({itemsToTrack}) => {
+const List = ({dbItems = []}) => {
   return (
     <Table striped bordered hover>
       <thead>
@@ -13,16 +13,15 @@ const List = ({itemsToTrack}) => {
         </tr>
       </thead>
       <tbody>
-        {itemsToTrack.map((item, i) => {
+        {dbItems.map((item) => {
           return (
-            <tr key={i+1}>
-              <td>{i+1}</td>
-              <td>{item}</td>
+            <tr key={item.id}>
+              <td>{item.description}</td>
+              <td>{item.category}</td>
               <td>
-                <Button
-                  variant="outline-danger"
-                  onClick={() => removeDataFromStorage(item)}
-                >Remove</Button>
+                {/* future edit function */}
+                {/* <Button variant="outline-warning" onClick={() => editExpense(item)}>Edit</Button>{' '} */}
+                <Button variant="outline-danger" onClick={() => removeExpense(item.id)}>Remove</Button>
               </td>
             </tr>
           )
