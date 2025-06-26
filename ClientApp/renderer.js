@@ -1,5 +1,5 @@
 const { ipcRenderer } = require("electron");
-const { FETCH_DATA_FROM_STORAGE, SAVE_DATA_IN_STORAGE, REMOVE_DATA_FROM_STORAGE} = require("../utils/constants")
+const { FETCH_DATA_FROM_STORAGE, SAVE_DATA_IN_STORAGE, REMOVE_DATA_FROM_STORAGE, EDIT_DATA_IN_STORAGE} = require("../utils/constants")
 
 // This renderer file contains much of our front end code for communicating with main. For that reason, it's similar to making api calls to the server, except here the calls are not asynchronous.
 
@@ -22,8 +22,13 @@ function saveDataInStorage(item) {
 
 // Remove an item
 function removeDataFromStorage(item) {
-  console.log("Renderer sending: REMOVE_DATA_FROM_STORAGE")
+  console.log("Renderer sending: REMOVE_DATA_FROM_STORAGE " + item)
   ipcRenderer.send(REMOVE_DATA_FROM_STORAGE, item)
 }
 
-module.exports = { loadSavedData, saveDataInStorage, removeDataFromStorage }
+// Send edit datapoint message to main
+function editDataInStorage(message) {
+  ipcRenderer.send(EDIT_DATA_IN_STORAGE, message)
+}
+
+module.exports = { loadSavedData, saveDataInStorage, removeDataFromStorage, editDataInStorage }

@@ -1,9 +1,20 @@
 import React from 'react';
 import Table from "react-bootstrap/Table"
 import Button from "react-bootstrap/Button";
-import {removeDataFromStorage} from "../renderer.js"
+import {removeDataFromStorage, editDataInStorage} from "../renderer.js";
 
 const List = ({itemsToTrack}) => {
+  
+  const removeItem = (item) => {
+    removeDataFromStorage(item)
+  }
+
+  // Not sure how to handle this on UI, doesn't work yet
+  const editItem = (item) => {
+    editDataInStorage(item)
+  }
+
+
   return (
     <Table striped bordered hover>
       <thead>
@@ -21,8 +32,11 @@ const List = ({itemsToTrack}) => {
               <td>
                 <Button
                   variant="outline-danger"
-                  onClick={() => removeDataFromStorage(item)}
-                >Remove</Button>
+                  onClick={() => removeItem(item)}
+                >Remove</Button><Button
+                  variant="outline-danger"
+                  onClick={() => editDataInStorage(item)}
+                >Edit</Button>
               </td>
             </tr>
           )

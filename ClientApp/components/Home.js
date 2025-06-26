@@ -3,8 +3,9 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from "react-bootstrap/InputGroup";
 import {loadSavedData, saveDataInStorage} from "../renderer.js";
 import List from "./List";
+import Search from "./Search";
 const { ipcRenderer } = require("electron");
-const { HANDLE_FETCH_DATA, HANDLE_SAVE_DATA, HANDLE_REMOVE_DATA } = require("../../utils/constants")
+const { HANDLE_FETCH_DATA, HANDLE_SAVE_DATA, HANDLE_REMOVE_DATA, HANDLE_EDIT_DATA } = require("../../utils/constants")
 
 const Home = () => {
   const [val, setVal] = useState("");
@@ -57,14 +58,28 @@ const Home = () => {
     setVal("")
   }
 
+    const handleKeypress = (event) => {
+      //it triggers by pressing the enter key
+    if (event.key === 'Enter') {
+      addItem(val)
+      console.log("attempt send")
+    } 
+  };
+
+
+
   return (
     <div>
+      <Search itemsToTrack={itemsToTrack}/>
       <InputGroup className="mb-3">
         <InputGroup.Prepend>
-          <Button variant="outline-primary" onClick={() => addItem(val)}>New Item</Button>
+          <Button variant="outline-primary" onClick={() => loadSavedData()}>Refresh</Button>
+          
         </InputGroup.Prepend>
-        <input type="text" onChange={handleChange} value={val}/>
+        <input type="text" onChange={handleChange} value={val} onKeyDown={handleKeypress} />
+        <Button variant="outline-primary"  onClick={() => addItem(val)}>New Item</Button>
       </InputGroup>
+      {/* <Link to="/BlankComponent">to BlankComponent</Link> */}
       {itemsToTrack.length ? (
         <List itemsToTrack={itemsToTrack} />
       ) : (

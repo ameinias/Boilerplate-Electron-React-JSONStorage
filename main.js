@@ -4,8 +4,12 @@
 const { app, ipcMain, BrowserWindow } = require('electron');
 const path = require('path')
 const url = require('url')
-const {HANDLE_FETCH_DATA, FETCH_DATA_FROM_STORAGE, HANDLE_SAVE_DATA, SAVE_DATA_IN_STORAGE, REMOVE_DATA_FROM_STORAGE, HANDLE_REMOVE_DATA} = require("./utils/constants")
+
 const storage = require("electron-json-storage")
+
+// Import all app constants
+const { HANDLE_FETCH_DATA, FETCH_DATA_FROM_STORAGE, HANDLE_SAVE_DATA, SAVE_DATA_IN_STORAGE, REMOVE_DATA_FROM_STORAGE,  HANDLE_REMOVE_DATA, HANDLE_EDIT_DATA, EDIT_DATA_IN_STORAGE } = require("./utils/constants")
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -21,7 +25,8 @@ if ( process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) 
 }
 
 // Keep a reference to the default path to userData, which will act as the app's database. It may not be necessary to use this
-const defaultDataPath = storage.getDefaultDataPath();
+ const defaultDataPath = storage.getDefaultDataPath(); // Switch this back eventually 
+//const defaultDataPath = 'C:\Users\gilli\Academic_local\Thesis databases\archive-BERJ\ClientApp\data.json';
 // On Mac: /Users/[username]/Library/Application Support/[app-name]/storage
 
 function createWindow() {
@@ -122,7 +127,7 @@ ipcMain.on(FETCH_DATA_FROM_STORAGE, (event, message) => {
 
 // Receive a SAVE_DATA_IN_STORAGE call from renderer
 ipcMain.on(SAVE_DATA_IN_STORAGE, (event, message) => {
-  console.log("Main received: SAVE_DATA_IN_STORAGE")
+  console.log("Main received: SAVE_DATA_IN_STORAGE to: " + defaultDataPath)
   // update the itemsToTrack array.
   itemsToTrack.push(message)
   // Save itemsToTrack to storage
@@ -144,17 +149,17 @@ ipcMain.on(SAVE_DATA_IN_STORAGE, (event, message) => {
 });
 
 // Receive a REMOVE_DATA_FROM_STORAGE call from renderer
-ipcMain.on(REMOVE_DATA_FROM_STORAGE, (event, message) => {
+ipcMain.on(REMOVE_DATA_FROM_STORAGE, (event, id) => {
   console.log('Main Received: REMOVE_DATA_FROM_STORAGE')
   // Update the items to Track array.
-  itemsToTrack = itemsToTrack.filter(item => item !== message)
+  itemsToTrack = itemsToTrack.filter(item => item.id !== id)
   // Save itemsToTrack to storage
   storage.set("itemsToTrack", itemsToTrack, (error) => {
     if (error) {
       console.log("We errored! What was data?")
       mainWindow.send(HANDLE_REMOVE_DATA, {
         success: false,
-        message: "itemsToTrack not saved",
+        message: id + " not removed",
       })
     } else {
       // Send new updated array to window as 2nd arg "data"
@@ -164,4 +169,42 @@ ipcMain.on(REMOVE_DATA_FROM_STORAGE, (event, message) => {
       })
     }
   })
+})
+
+
+// Update a datapoint -- message will be the updated
+ipcMain.on(EDIT_DATA_IN_STORAGE, (event, message) => {
+  console.log("main received", EDIT_DATA_IN_STORAGE, "message:", message)
+
+  let datapointToEdit = itemsToTrack.find(item => {
+    // The message should have an identifying key
+    itemsToTrack.id === message.id
+  })
+
+  if (datapointToEdit) {
+    datapointToEdit = message;
+    console.log("does this properly update the itemsToTrack array?", itemsToTrack)
+
+    // Set itemsToTrack in storage
+    storage.set("itemsToTrack", itemsToTrack, (error) => {
+      if (error) {
+        mainWindow.send(HANDLE_FETCH_DATA, {
+          success: false,
+          error: "error editing an expense in storage",
+        })
+      } else {
+        // Send message back to window
+        mainWindow.send(HANDLE_FETCH_DATA, {
+          success: true,
+          message: itemsToTrack,
+        })
+      }
+    })
+  } else {
+    // The datapoint was not found
+    mainWindow.send(HANDLE_FETCH_DATA, {
+      success: false,
+      error: "main: did not find the corresponding expense",
+    })
+  }
 })
