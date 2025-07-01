@@ -6,7 +6,8 @@ const NavBar = () => {
 
     return (
     <div>
-        <h2>go home</h2>
+        temp nav bar
+        <hr></hr>
     </div>
     )
 

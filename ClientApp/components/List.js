@@ -16,33 +16,42 @@ const List = ({itemsToTrack}) => {
 
 
   return (
+    <div>
     <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Item</th>
-        </tr>
-      </thead>
-      <tbody>
-        {itemsToTrack.map((item, i) => {
-          return (
-            <tr key={i+1}>
-              <td>{i+1}</td>
-              <td>{item}</td>
-              <td>
-                <Button
-                  variant="outline-danger"
-                  onClick={() => removeItem(item)}
-                >Remove</Button><Button
-                  variant="outline-danger"
-                  onClick={() => editDataInStorage(item)}
-                >Edit</Button>
-              </td>
-            </tr>
-          )
-        })}
-      </tbody>
-    </Table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Title</th>
+      {/* <th>Amount</th>
+      <th>Category</th>
+      <th>Date</th> */}
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {itemsToTrack.map((item, i) => (
+      <tr key={i + 1}>
+        <td>{item.id}</td>
+        <td>{item.title}</td>
+        {/* <td>{item.amount}</td>
+        <td>{item.category}</td>
+        <td>{item.date}</td> */}
+        <td>
+                    <Button
+            variant="outline-secondary"
+            onClick={() => editDataInStorage(item)}
+          >E</Button>
+          <Button
+            variant="outline-danger"
+            onClick={() => removeItem(item)}
+          >R</Button>
+
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</Table>
+    </div>
   )
 }
 

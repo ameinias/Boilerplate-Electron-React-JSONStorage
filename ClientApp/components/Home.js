@@ -39,12 +39,12 @@ const Home = () => {
 
   // Receives itemsToTrack from main and sets the state
   const handleReceiveData = (event, data) => {
-    setItems([...data.message]);
+    setItems(Array.from(data.message));
   };
 
   // Receives a new item back from main
   const handleNewItem = (event, data) => {
-    setItems([...itemsToTrack, data.message])
+    setItems(itemsToTrack.concat(data.message));
   }
 
   // Manage state and input field
@@ -69,12 +69,11 @@ const Home = () => {
 
 
   return (
-    <div>
+    <div className="sidebar">
       <Search itemsToTrack={itemsToTrack}/>
       <InputGroup className="mb-3">
         <InputGroup.Prepend>
           <Button variant="outline-primary" onClick={() => loadSavedData()}>Refresh</Button>
-          
         </InputGroup.Prepend>
         <input type="text" onChange={handleChange} value={val} onKeyDown={handleKeypress} />
         <Button variant="outline-primary"  onClick={() => addItem(val)}>New Item</Button>

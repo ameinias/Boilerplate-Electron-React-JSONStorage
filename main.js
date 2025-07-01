@@ -26,7 +26,7 @@ if ( process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) 
 
 // Keep a reference to the default path to userData, which will act as the app's database. It may not be necessary to use this
  const defaultDataPath = storage.getDefaultDataPath(); // Switch this back eventually 
-//const defaultDataPath = 'C:\Users\gilli\Academic_local\Thesis databases\archive-BERJ\ClientApp\data.json';
+//const defaultDataPath = 'C:/Users/gilli/Academic_local/Thesis databases/archive-BERJ/ClientApp/data.json';
 // On Mac: /Users/[username]/Library/Application Support/[app-name]/storage
 
 function createWindow() {
@@ -104,7 +104,7 @@ app.on('activate', () => {
 
 // Receives a FETCH_DATA_FROM_STORAGE from renderer
 ipcMain.on(FETCH_DATA_FROM_STORAGE, (event, message) => {
-  console.log("Main received: FETCH_DATA_FROM_STORAGE with message:", message)
+  console.log("Main received: FETCH_DATA_FROM_STORAGE with message:", message, defaultDataPath)
   // Get the user's itemsToTrack from storage
   // For our purposes, message = itemsToTrack array
   storage.get(message, (error, data) => {
@@ -174,16 +174,13 @@ ipcMain.on(REMOVE_DATA_FROM_STORAGE, (event, id) => {
 
 // Update a datapoint -- message will be the updated
 ipcMain.on(EDIT_DATA_IN_STORAGE, (event, message) => {
-  console.log("main received", EDIT_DATA_IN_STORAGE, "message:", message)
+  console.log("main received", EDIT_DATA_IN_STORAGE, "message:", message,  defaultDataPath)
 
-  let datapointToEdit = itemsToTrack.find(item => {
-    // The message should have an identifying key
-    itemsToTrack.id === message.id
-  })
+  let index = itemsToTrack.findIndex(item => item.id === message.id);
 
-  if (datapointToEdit) {
-    datapointToEdit = message;
-    console.log("does this properly update the itemsToTrack array?", itemsToTrack)
+  if (index !== -1) {
+    itemsToTrack[index] = message;
+    console.log("does this properly update the itemsToTrack array?", message)
 
     // Set itemsToTrack in storage
     storage.set("itemsToTrack", itemsToTrack, (error) => {
