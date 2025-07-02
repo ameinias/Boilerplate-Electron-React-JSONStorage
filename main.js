@@ -10,6 +10,15 @@ const storage = require("electron-json-storage")
 // Import all app constants
 const { HANDLE_FETCH_DATA, FETCH_DATA_FROM_STORAGE, HANDLE_SAVE_DATA, SAVE_DATA_IN_STORAGE, REMOVE_DATA_FROM_STORAGE,  HANDLE_REMOVE_DATA, HANDLE_EDIT_DATA, EDIT_DATA_IN_STORAGE } = require("./utils/constants")
 
+const contextMenu = require('electron-context-menu');
+
+contextMenu({
+  showSaveImageAs: true,
+  showCopyImage: true,
+  showInspectElement: true,
+  showCopyImageAddress: true,
+  shouldShowMenu:true
+});
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -206,26 +215,3 @@ ipcMain.on(EDIT_DATA_IN_STORAGE, (event, message) => {
   }
 })
 
-// renderer
-window.addEventListener('contextmenu', (e) => {
-  e.preventDefault()
-  ipcRenderer.send('show-context-menu')
-})
-
-ipcRenderer.on('context-menu-command', (e, command) => {
-  // ...
-})
-
-// main
-ipcMain.on('show-context-menu', (event) => {
-  const template = [
-    {
-      label: 'Menu Item 1',
-      click: () => { event.sender.send('context-menu-command', 'menu-item-1') }
-    },
-    { type: 'separator' },
-    { label: 'Menu Item 2', type: 'checkbox', checked: true }
-  ]
-  const menu = Menu.buildFromTemplate(template)
-  menu.popup({ window: BrowserWindow.fromWebContents(event.sender) })
-})
