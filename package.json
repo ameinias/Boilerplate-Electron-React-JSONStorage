@@ -1,12 +1,12 @@
 {
-  "name": "expense-tracker-electron",
-  "version": "0.7.0",
-  "description": "Expense Tracker Stackathon Project using Electron.js D3 and React Hooks",
+  "name": "archive-berg",
+  "version": "0.4.0",
+  "description": "Archive software for the decerning researcher.",
   "author": "Danny Berger",
-  "homepage": "https://github.com/KungoJung/expense-tracker-electron",
+  "homepage": "https://github.com/ameinias/archive-berj",
   "repository": {
     "type": "git",
-    "url": "https://github.com/KungoJung/expense-tracker-electron.git"
+    "url": "https://github.com/ameinias/archive-berj.git"
   },
   "license": "none",
   "main": "main.js",

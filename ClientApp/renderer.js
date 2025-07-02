@@ -31,4 +31,6 @@ function editDataInStorage(message) {
   ipcRenderer.send(EDIT_DATA_IN_STORAGE, message)
 }
 
+
+
 module.exports = { loadSavedData, saveDataInStorage, removeDataFromStorage, editDataInStorage }

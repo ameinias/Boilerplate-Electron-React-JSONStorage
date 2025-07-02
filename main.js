@@ -150,7 +150,7 @@ ipcMain.on(SAVE_DATA_IN_STORAGE, (event, message) => {
 
 // Receive a REMOVE_DATA_FROM_STORAGE call from renderer
 ipcMain.on(REMOVE_DATA_FROM_STORAGE, (event, id) => {
-  console.log('Main Received: REMOVE_DATA_FROM_STORAGE')
+  console.log('Main Received: REMOVE_DATA_FROM_STORAGE ' + id + " from " + defaultDataPath)
   // Update the items to Track array.
   itemsToTrack = itemsToTrack.filter(item => item.id !== id)
   // Save itemsToTrack to storage
@@ -204,4 +204,28 @@ ipcMain.on(EDIT_DATA_IN_STORAGE, (event, message) => {
       error: "main: did not find the corresponding expense",
     })
   }
+})
+
+// renderer
+window.addEventListener('contextmenu', (e) => {
+  e.preventDefault()
+  ipcRenderer.send('show-context-menu')
+})
+
+ipcRenderer.on('context-menu-command', (e, command) => {
+  // ...
+})
+
+// main
+ipcMain.on('show-context-menu', (event) => {
+  const template = [
+    {
+      label: 'Menu Item 1',
+      click: () => { event.sender.send('context-menu-command', 'menu-item-1') }
+    },
+    { type: 'separator' },
+    { label: 'Menu Item 2', type: 'checkbox', checked: true }
+  ]
+  const menu = Menu.buildFromTemplate(template)
+  menu.popup({ window: BrowserWindow.fromWebContents(event.sender) })
 })

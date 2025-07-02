@@ -7,11 +7,14 @@ const List = ({itemsToTrack}) => {
   
   const removeItem = (item) => {
     removeDataFromStorage(item)
+    console.log("Removing item: ", item)
   }
 
   // Not sure how to handle this on UI, doesn't work yet
   const editItem = (item) => {
-    editDataInStorage(item)
+    // add this back in to handle actually sending to the database,
+    // for now, just repopulate the Single Item Page
+    // editDataInStorage(item)
   }
 
 
@@ -39,11 +42,11 @@ const List = ({itemsToTrack}) => {
         <td>
                     <Button
             variant="outline-secondary"
-            onClick={() => editDataInStorage(item)}
+            onClick={() => editDataInStorage(item.id)}
           >E</Button>
           <Button
             variant="outline-danger"
-            onClick={() => removeItem(item)}
+            onClick={() => removeItem(item.id)}
           >R</Button>
 
         </td>
